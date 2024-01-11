@@ -1,68 +1,42 @@
 <template>
-  <div v-if="item">
-    <Hero :title="item.content" variant="xs" type="Post"
-      ><button class="btn btn-danger btn-sm" @click.prevent="remove">
-        Delete
-      </button>
-      <a
-        class="btn btn-primary btn-sm mt-auto ms-auto"
-        :href="`/channel/${item.channel.id}/post/${item.id}/comment/new`"
-        >New Comment</a
-      ></Hero
-    >
+  <ThinContainer v-if="post">
+    <PostHero :post="post" />
     <hr />
-
-    <div class="list-group" v-if="item.comments.length > 0">
-      <CommentListItem
-        v-for="(item, index) in item.comments"
-        :key="index"
-        :item="item"
-      />
-    </div>
-    <p v-else>No comments available.</p>
-  </div>
+    <NewCommentForm :post-id="postId" @add-comment="handleAddComment" />
+    <hr />
+    <CommentList :comments="post.comments" />
+  </ThinContainer>
 </template>
 
 <script setup lang="ts">
-import Api from "@/services/Api";
-import { Post } from "@/types";
-import { Ref, onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import CommentListItem from "./CommentListItem.vue";
-import Hero from "@/components/Hero.vue";
+import ThinContainer from "@/components/containers/ThinContainer.vue";
+import { Api } from "@/services/api/Api";
+import type { Comment, Post } from "@/types";
+import { computed, onBeforeMount, ref, type Ref } from "vue";
+import { useRoute } from "vue-router";
+import CommentList from "./CommentList.vue";
+import NewCommentForm from "./NewCommentForm.vue";
+import PostHero from "./PostHero.vue";
 
-const router = useRouter();
 const route = useRoute();
 const api = new Api();
 
-const loading: Ref<boolean> = ref(false);
-const item: Ref<Post | null> = ref(null);
+const post: Ref<Post | null> = ref(null);
 
-onMounted(async () => {
-  loading.value = true;
+const postId = computed(() => parseInt(route.params.id as string));
+
+function handleAddComment(e: Comment) {
+  if (post.value) post.value.comments = [e, ...post.value.comments];
+}
+
+onBeforeMount(async () => {
   try {
-    const response = await api.getPost(
-      route.params.channelId,
-      route.params.postId
-    );
-    item.value = response;
+    const response = await api.getPost(postId.value);
+    post.value = response;
   } catch (error) {
     console.log(error);
   }
-  loading.value = false;
 });
-
-const remove = async () => {
-  try {
-    const response = await api.deletePost(
-      route.params.channelId,
-      route.params.postId
-    );
-    router.push(`/channel/${route.params.channelId}`);
-  } catch (error) {
-    console.log(error);
-  }
-};
 </script>
 
 <style scoped></style>

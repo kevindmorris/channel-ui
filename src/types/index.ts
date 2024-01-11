@@ -1,21 +1,20 @@
-type Base = {
-  id: number;
-  createdDate?: string;
-  updatedDate?: string;
+export type Channel = {
+  id: string;
   content: string;
+  posts: Post[];
+  numPosts?: number;
 };
 
-export type Channel = Base & {
-  posts?: Post[];
-  numPosts: number;
-};
-
-export type Post = Base & {
+export type Post = {
+  id: string;
+  content: string;
   channel: Channel;
-  comments?: Comment[];
-  numComments: number;
+  comments: Comment[];
+  numComments?: number;
 };
 
-export type Comment = Base & {
-  post?: Post;
+export type Comment = {
+  id: string;
+  content: string;
+  post: Post;
 };

@@ -1,53 +1,66 @@
 <template>
   <form @submit.prevent="submit">
     <div class="mb-3">
-      <label for="channelTitle" class="form-label">Title</label>
+      <label for="content" class="form-label">Name</label>
       <input
         type="text"
+        id="content"
+        ref="contentInput"
+        v-model="form.content"
         class="form-control"
-        id="channelTitle"
-        autofocus
-        v-model.trim="newChannelContent"
+        required
       />
     </div>
     <div class="form-check mb-3">
       <input
-        class="form-check-input"
         type="checkbox"
-        v-model="openNewChannel"
-        id="openChannel"
+        id="open"
+        v-model="form.createAnother"
+        class="form-check-input"
       />
-      <label class="form-check-label" for="openChannel">
-        Open the new channel's page on creation.
-      </label>
+      <label for="open" class="form-check-label">Create another.</label>
     </div>
-    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+    <div class="d-flex justify-content-end gap-1">
+      <button
+        type="button"
+        class="btn btn-secondary btn-sm"
+        @click.prevent="clearForm"
+      >
+        Clear
+      </button>
+      <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+    </div>
   </form>
 </template>
 
 <script setup lang="ts">
-import { Ref, ref } from "vue";
-import Api from "../../services/Api";
+import { Api } from "@/services/api/Api";
+import type { Channel } from "@/types";
+import { onMounted, reactive, ref, type Ref } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 const api = new Api();
 
-const loading: Ref<boolean> = ref(false);
-const newChannelContent: Ref<string> = ref("");
-const openNewChannel: Ref<boolean> = ref(true);
+const contentInput: Ref<HTMLInputElement | null> = ref(null);
+const form = reactive({ content: "", createAnother: false });
 
-const submit = async () => {
-  loading.value = true;
-  try {
-    const response = await api.createChannel(newChannelContent.value);
-    if (openNewChannel.value) router.push(`/channel/${response.id}`);
-    else router.push("/discover");
-  } catch (error) {
-    console.log(error);
-  }
-  loading.value = false;
-};
+function clearForm() {
+  form.content = "";
+  form.createAnother = false;
+}
+
+async function submit() {
+  const newChannel = await api.createChannel({
+    content: form.content
+  } as Channel);
+  if (!form.createAnother) router.push(`/channel/${newChannel.id}`);
+  clearForm();
+}
+
+onMounted(() => {
+  contentInput.value?.focus();
+});
 </script>
 
 <style scoped></style>

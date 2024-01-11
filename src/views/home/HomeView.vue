@@ -1,33 +1,40 @@
 <template>
-  <h1 class="display-4 text-center">Welcome to Channel!</h1>
-  <p class="lead text-center">Connect, Converse, and Collaborate.</p>
-  <hr />
-  <ul class="list-group grid gap-2">
-    <HomeListItem
-      v-for="(item, index) in items"
-      :key="index"
-      :button-text="item.buttonText"
-      :href="item.href"
-      :description="item.description"
-    />
-  </ul>
+  <ThinContainer>
+    <HomeHero />
+    <div class="grid">
+      <HomeItem
+        v-for="item in items"
+        :key="item.label"
+        :href="item.href"
+        :label="item.label"
+        >{{ item.description }}</HomeItem
+      >
+    </div>
+  </ThinContainer>
 </template>
 
 <script setup lang="ts">
-import HomeListItem from "./HomeListItem.vue";
+import ThinContainer from "@/components/containers/ThinContainer.vue";
+import { ref, type Ref } from "vue";
+import HomeHero from "./HomeHero.vue";
+import HomeItem from "./HomeItem.vue";
 
-const items = [
+interface Item {
+  label: string;
+  description: string;
+  href: string;
+}
+
+const items: Ref<Item[]> = ref([
   {
-    buttonText: "Discover",
-    href: "/discover",
-    description: "Find out what others are talking about.",
+    label: "Discover",
+    description: "Explore available channels.",
+    href: "/discover"
   },
   {
-    buttonText: "New Channel",
-    href: "/channel/new",
-    description: "Spark your own conversation.",
-  },
-];
+    label: "New channel",
+    description: "Spark a new conversation.",
+    href: "/channel/new"
+  }
+]);
 </script>
-
-<style scoped></style>

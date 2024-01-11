@@ -1,21 +1,19 @@
 <template>
-  <a
-    :href="`/channel/${item.id}`"
-    class="list-group-item list-group-item-action d-flex gap-3 justify-content-between"
+  <RouterLink
+    :to="`/channel/` + props.channel.id"
+    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
   >
-    <div>
-      <p class="m-0 text-break">{{ props.item.content }}</p>
-    </div>
-    <span class="mb-auto badge bg-primary rounded-pill">{{
-      item.numPosts
-    }}</span>
-  </a>
+    {{ props.channel.content }}
+    <span class="badge bg-primary rounded-pill">
+      {{ props.channel.numPosts }}
+    </span>
+  </RouterLink>
 </template>
 
 <script setup lang="ts">
-import { Channel } from "@/types";
+import type { Channel } from "@/types";
 
-const props = defineProps<{ item: Channel }>();
+const props = defineProps<{ channel: Channel }>();
 </script>
 
 <style scoped></style>
