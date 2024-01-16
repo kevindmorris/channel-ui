@@ -13,6 +13,10 @@ export default class AccountApi {
     );
   }
 
+  async deleteChannels(): Promise<void> {
+    await this.baseApi().axios.delete(this.baseApi().base + `/channels`, {});
+  }
+
   async getChannel(id: number): Promise<Channel> {
     const response = await this.baseApi().axios.get(
       this.baseApi().base + `/channels/${id}`,

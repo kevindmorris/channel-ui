@@ -1,42 +1,93 @@
 <template>
-  <ThinContainer v-if="post">
-    <PostHero :post="post" />
+  <Container v-if="post">
+    <span class="badge text-bg-primary">Post</span>
+    <h1 class="display-6 fw-bold">{{ post.content }}</h1>
+    <div class="d-flex">
+      <RouterLink
+        class="btn btn-primary btn-sm"
+        :to="'/post/' + postId + '/comment/new'"
+        >New Comment</RouterLink
+      >
+      <RouterLink
+        class="btn btn-secondary btn-sm ms-1"
+        :to="'/post/' + postId + '/update'"
+        >Update Post</RouterLink
+      >
+      <button class="btn btn-danger btn-sm ms-1" @click="deleteComments">
+        Delete All Comments
+      </button>
+      <button class="btn btn-danger btn-sm ms-1" @click="deletePost">
+        Delete Post
+      </button>
+
+      <RouterLink
+        class="btn btn-secondary btn-sm ms-auto"
+        :to="'/channel/' + post.channel.id"
+        >Back to Channel</RouterLink
+      >
+    </div>
+
     <hr />
-    <NewCommentForm :post-id="postId" @add-comment="handleAddComment" />
-    <hr />
-    <CommentList :comments="post.comments" />
-  </ThinContainer>
+
+    <div class="list-group" v-if="post.comments.length > 0">
+      <RouterLink
+        v-for="comment in post.comments"
+        class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
+        :key="comment.id"
+        :to="'/comment/' + comment.id"
+        ><div class="ms-2 me-auto">
+          <div class="fw-bold">{{ comment.content }}</div>
+          <small>{{ toDisplayDate(comment.createdDate) }}</small>
+        </div></RouterLink
+      >
+    </div>
+    <div v-else>No comments to display.</div>
+  </Container>
 </template>
 
 <script setup lang="ts">
-import ThinContainer from "@/components/containers/ThinContainer.vue";
+import Container from "@/components/containers/Container.vue";
 import { Api } from "@/services/api/Api";
-import type { Comment, Post } from "@/types";
-import { computed, onBeforeMount, ref, type Ref } from "vue";
-import { useRoute } from "vue-router";
-import CommentList from "./CommentList.vue";
-import NewCommentForm from "./NewCommentForm.vue";
-import PostHero from "./PostHero.vue";
+import type { Post } from "@/types";
+import { toDisplayDate } from "@/utils";
+import { computed, onMounted, ref, type Ref } from "vue";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 
-const route = useRoute();
 const api = new Api();
-
+const router = useRouter();
+const route = useRoute();
 const post: Ref<Post | null> = ref(null);
 
-const postId = computed(() => parseInt(route.params.id as string));
+const postId = computed(() => parseInt(route.params.postId as string));
 
-function handleAddComment(e: Comment) {
-  if (post.value) post.value.comments = [e, ...post.value.comments];
-}
-
-onBeforeMount(async () => {
+const fetchPost = async () => {
   try {
     const response = await api.getPost(postId.value);
     post.value = response;
   } catch (error) {
     console.log(error);
   }
-});
+};
+
+const deleteComments = async () => {
+  try {
+    await api.deleteCommentsByPost(postId.value);
+    fetchPost();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const deletePost = async () => {
+  try {
+    await api.deletePost(postId.value);
+    router.push(`/channel/${post.value?.channel.id}`);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+onMounted(fetchPost);
 </script>
 
 <style scoped></style>

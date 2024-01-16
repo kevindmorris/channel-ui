@@ -1,22 +1,26 @@
 <template>
   <Container
-    ><h1 class="display-6 fw-bold">Create a new channel</h1>
+    ><h1 class="display-6 fw-bold">
+      Create a new post in
+      <RouterLink class="display-6 fw-bold" :to="'/channel/' + channelId">{{
+        channel?.content
+      }}</RouterLink>
+    </h1>
 
     <hr />
     <form @submit.prevent="submit">
       <div class="mb-3">
-        <label for="contentInput" class="form-label">Channel title</label>
-        <input
-          type="text"
+        <label for="contentInput" class="form-label">Content</label>
+        <textarea
           class="form-control"
           id="contentInput"
           ref="contentInput"
           aria-describedby="contentHelp"
           v-model="content"
-        />
+          @keydown="handleKeydown"
+        ></textarea>
         <div id="contentHelp" class="form-text">
-          Great channel titles are general topics. (e.g. "Movies", "Music", or
-          "Television")
+          Great posts are topical musings related to their channel.
         </div>
       </div>
       <div class="mb-3 form-check">
@@ -27,7 +31,7 @@
           v-model="openPage"
         />
         <label class="form-check-label" for="openPage"
-          >Open the channel page on submission.</label
+          >Open the post page on submission.</label
         >
       </div>
       <button type="submit" class="btn btn-primary btn-sm">Submit</button>
@@ -40,24 +44,42 @@
 
 <script setup lang="ts">
 import Container from "@/components/containers/Container.vue";
+import { computed, onMounted, ref, type Ref } from "vue";
 import { Api } from "@/services/api/Api";
-import type { Channel } from "@/types";
-import { onMounted, ref, type Ref } from "vue";
-import { useRouter } from "vue-router";
+import type { Channel, Post } from "@/types";
+import { useRoute, useRouter } from "vue-router";
 
 const api = new Api();
 const router = useRouter();
+const route = useRoute();
 const contentInput: Ref<HTMLInputElement | null> = ref(null);
 const content = ref("");
 const openPage = ref(false);
 
+const channelId = computed(() => parseInt(route.params.channelId as string));
+
+const channel: Ref<Channel | null> = ref(null);
+
+const fetchChannel = async () => {
+  try {
+    const response = await api.getChannel(channelId.value);
+    channel.value = response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.code === "Enter") submit();
+};
+
 async function submit() {
   try {
-    const response = await api.createChannel({
+    const response = await api.createPost(channelId.value, {
       content: content.value
-    } as Channel);
-    if (openPage.value) router.push(`/channel/${response.id}`);
-    else router.push("/discover");
+    } as Post);
+    if (openPage.value) router.push(`/post/${response.id}`);
+    else router.push(`/channel/${channelId.value}`);
   } catch (error) {
     console.log(error);
   }
@@ -70,6 +92,7 @@ async function clear() {
 }
 
 onMounted(() => {
+  fetchChannel();
   contentInput.value?.focus();
 });
 </script>

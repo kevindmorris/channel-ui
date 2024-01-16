@@ -13,9 +13,9 @@ export default class AccountApi {
     );
   }
 
-  async deleteCommentsByChannel(channelId: number): Promise<void> {
+  async deleteCommentsByPost(postId: number): Promise<void> {
     await this.baseApi().axios.delete(
-      this.baseApi().base + `/channels/${channelId}/comments`,
+      this.baseApi().base + `/posts/${postId}/comments`,
       {}
     );
   }
@@ -28,9 +28,9 @@ export default class AccountApi {
     return response.data;
   }
 
-  async getCommentsByChannel(channelId: number): Promise<Comment[]> {
+  async getCommentsByPost(postId: number): Promise<Comment[]> {
     const response = await this.baseApi().axios.get(
-      this.baseApi().base + `/channels/${channelId}/comments`,
+      this.baseApi().base + `/posts/${postId}/comments`,
       {}
     );
     return response.data;
