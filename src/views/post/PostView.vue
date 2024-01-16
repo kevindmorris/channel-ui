@@ -19,7 +19,6 @@
       <button class="btn btn-danger btn-sm ms-1" @click="deletePost">
         Delete Post
       </button>
-
       <RouterLink
         class="btn btn-secondary btn-sm ms-auto"
         :to="'/channel/' + post.channel.id"
@@ -30,26 +29,21 @@
     <hr />
 
     <div class="list-group" v-if="post.comments.length > 0">
-      <RouterLink
+      <CommentListItem
         v-for="comment in post.comments"
-        class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
         :key="comment.id"
-        :to="'/comment/' + comment.id"
-        ><div class="ms-2 me-auto">
-          <div class="fw-bold">{{ comment.content }}</div>
-          <small>{{ toDisplayDate(comment.createdDate) }}</small>
-        </div></RouterLink
-      >
+        :comment="comment"
+      />
     </div>
     <div v-else>No comments to display.</div>
   </Container>
 </template>
 
 <script setup lang="ts">
+import CommentListItem from "@/components/comment/CommentListItem.vue";
 import Container from "@/components/containers/Container.vue";
 import { Api } from "@/services/api/Api";
 import type { Post } from "@/types";
-import { toDisplayDate } from "@/utils";
 import { computed, onMounted, ref, type Ref } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 

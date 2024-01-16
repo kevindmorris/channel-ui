@@ -4,34 +4,28 @@
     <RouterLink class="btn btn-primary btn-sm" to="/channel/new"
       >New Channel</RouterLink
     >
-    <button class="btn btn-danger btn-sm ms-1" @click="clear">Delete All Channels</button>
+    <button class="btn btn-danger btn-sm ms-1" @click="clear">
+      Delete All Channels
+    </button>
 
     <hr />
 
     <div class="list-group" v-if="channels.length > 0">
-      <RouterLink
+      <ChannelListItem
         v-for="channel in channels"
-        class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
         :key="channel.id"
-        :to="'/channel/' + channel.id"
-        ><div class="ms-2 me-auto">
-          <div class="fw-bold">{{ channel.content }}</div>
-          <small>{{ toDisplayDate(channel.createdDate) }}</small>
-        </div>
-        <span class="badge bg-primary rounded-pill">{{
-          channel.numPosts
-        }}</span></RouterLink
-      >
+        :channel="channel"
+      />
     </div>
     <div v-else>No channels to display.</div>
   </Container>
 </template>
 
 <script setup lang="ts">
+import ChannelListItem from "@/components/channel/ChannelListItem.vue";
 import Container from "@/components/containers/Container.vue";
 import { Api } from "@/services/api/Api";
 import type { Channel } from "@/types";
-import { toDisplayDate } from "@/utils";
 import { onMounted, ref } from "vue";
 import { RouterLink } from "vue-router";
 

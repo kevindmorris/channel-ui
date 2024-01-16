@@ -1,24 +1,24 @@
 export type Channel = {
-  id: string;
+  id: number;
   content: string;
   createdDate: string;
   updatedDate: string;
-  posts: Post[];
+  posts?: Post[];
   numPosts?: number;
 };
 
 export type Post = {
-  id: string;
+  id: number;
   content: string;
   createdDate: string;
   updatedDate: string;
   channel: Channel;
-  comments: Comment[];
+  comments?: Comment[];
   numComments?: number;
 };
 
 export type Comment = {
-  id: string;
+  id: number;
   content: string;
   createdDate: string;
   updatedDate: string;

@@ -24,19 +24,7 @@
     <hr />
 
     <div class="list-group" v-if="channel.posts.length > 0">
-      <RouterLink
-        v-for="post in channel.posts"
-        class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
-        :key="post.id"
-        :to="'/post/' + post.id"
-        ><div class="ms-2 me-auto">
-          <div class="fw-bold">{{ post.content }}</div>
-          <small>{{ toDisplayDate(post.createdDate) }}</small>
-        </div>
-        <span class="badge bg-primary rounded-pill">{{
-          post.numComments
-        }}</span></RouterLink
-      >
+      <PostListItem v-for="post in channel.posts" :key="post.id" :post="post" />
     </div>
     <div v-else>No posts to display.</div>
   </Container>
@@ -44,9 +32,9 @@
 
 <script setup lang="ts">
 import Container from "@/components/containers/Container.vue";
+import PostListItem from "@/components/post/PostListItem.vue";
 import { Api } from "@/services/api/Api";
 import type { Channel } from "@/types";
-import { toDisplayDate } from "@/utils";
 import { computed, onMounted, ref, type Ref } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 
