@@ -1,10 +1,8 @@
-import ChannelApi from "./apis/ChannelApi";
-import CommentApi from "./apis/CommentApi";
-import PostApi from "./apis/PostApi";
+import { AuthApi, ChannelApi, CommentApi, PostApi } from "./apis";
 
 export class Api {}
 
-export interface Api extends ChannelApi, PostApi, CommentApi {}
+export interface Api extends AuthApi, ChannelApi, PostApi, CommentApi {}
 
 function applyMixins(derivedCtor: any, constructors: any[]) {
   constructors.forEach((baseCtor) => {
@@ -19,4 +17,4 @@ function applyMixins(derivedCtor: any, constructors: any[]) {
   });
 }
 
-applyMixins(Api, [ChannelApi, PostApi, CommentApi]);
+applyMixins(Api, [AuthApi, ChannelApi, PostApi, CommentApi]);

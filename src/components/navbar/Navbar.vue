@@ -21,7 +21,10 @@ import { ref } from "vue";
 import { RouterLink } from "vue-router";
 import NavbarLink from "./NavbarLink.vue";
 
-const links = ref([{ label: "Discover", href: "/discover" }]);
+const links = ref([
+  { label: "Discover", href: "/discover" },
+  { label: "User", href: "/user" }
+]);
 </script>
 
 <style scoped></style>

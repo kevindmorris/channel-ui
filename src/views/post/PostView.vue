@@ -28,7 +28,7 @@
 
     <hr />
 
-    <div class="list-group" v-if="post.comments.length > 0">
+    <div class="list-group" v-if="post.comments && post.comments.length > 0">
       <CommentListItem
         v-for="comment in post.comments"
         :key="comment.id"
@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import CommentListItem from "@/components/comment/CommentListItem.vue";
+import { CommentListItem } from "@/components/comment";
 import Container from "@/components/containers/Container.vue";
 import { Api } from "@/services/api/Api";
 import type { Post } from "@/types";
@@ -85,3 +85,4 @@ onMounted(fetchPost);
 </script>
 
 <style scoped></style>
+@/components/comment

@@ -23,7 +23,7 @@
 
     <hr />
 
-    <div class="list-group" v-if="channel.posts.length > 0">
+    <div class="list-group" v-if="channel.posts && channel.posts.length > 0">
       <PostListItem v-for="post in channel.posts" :key="post.id" :post="post" />
     </div>
     <div v-else>No posts to display.</div>
@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import Container from "@/components/containers/Container.vue";
-import PostListItem from "@/components/post/PostListItem.vue";
+import { PostListItem } from "@/components/post";
 import { Api } from "@/services/api/Api";
 import type { Channel } from "@/types";
 import { computed, onMounted, ref, type Ref } from "vue";
@@ -76,3 +76,4 @@ onMounted(fetchChannel);
 </script>
 
 <style scoped></style>
+@/components/post

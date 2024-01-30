@@ -1,14 +1,17 @@
-import ChannelView from "@/views/channel/ChannelView.vue";
-import CommentView from "@/views/comment/CommentView.vue";
-import DiscoverView from "@/views/discover/DiscoverView.vue";
-import HomeView from "@/views/home/HomeView.vue";
-import NewChannelView from "@/views/new-channel/NewChannelView.vue";
-import NewCommentView from "@/views/new-comment/NewCommentView.vue";
-import NewPostView from "@/views/new-post/NewPostView.vue";
-import PostView from "@/views/post/PostView.vue";
-import UpdateChannelView from "@/views/update-channel/UpdateChannelView.vue";
-import UpdateCommentView from "@/views/update-comment/UpdateCommentView.vue";
-import UpdatePostView from "@/views/update-post/UpdatePostView.vue";
+import {
+  ChannelView,
+  CommentView,
+  DiscoverView,
+  HomeView,
+  NewChannelView,
+  NewCommentView,
+  NewPostView,
+  PostView,
+  UpdateChannelView,
+  UpdateCommentView,
+  UpdatePostView,
+  UserView
+} from "@/views";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -23,6 +26,11 @@ const router = createRouter({
       path: "/discover",
       name: "discover",
       component: DiscoverView
+    },
+    {
+      path: "/user",
+      name: "user",
+      component: UserView
     },
     {
       path: "/channel/new",

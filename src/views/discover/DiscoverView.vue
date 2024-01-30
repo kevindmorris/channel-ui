@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import ChannelListItem from "@/components/channel/ChannelListItem.vue";
+import { ChannelListItem } from "@/components/channel";
 import Container from "@/components/containers/Container.vue";
 import { Api } from "@/services/api/Api";
 import type { Channel } from "@/types";
